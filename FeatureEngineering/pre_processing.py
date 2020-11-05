@@ -1,8 +1,10 @@
 import pandas as pd
 import numpy as np
 
-data = pd.read_csv('data.csv')
-# Specify label column name here
+# Please change the file location as needed
+file_location = "./bank_churn_project_1.csv"
+data = pd.read_csv(file_location)
+# Please change the label to match dataset
 label = 'Exited'
 
 
@@ -17,15 +19,23 @@ if colIdx != 0:
 modified_data = data[cols]
 
 # Remove the useless columns
+# Note that below code is a sample
+# Please change the value as you see fit
+
+# Maximum categories allowed in a column
+# If a column contains more than 10 categories, it is dropped
+MAX_CAT_ALLOWED = 10
+
 cat_cols = modified_data.select_dtypes(exclude=['int', 'float']).columns
 cat_cols = set(cat_cols) - {label}
 
 useless_cols = []
 for cat_column_features in cat_cols:
     num_cat = modified_data[cat_column_features].nunique()
-    if num_cat > 10:
+    if num_cat > MAX_CAT_ALLOWED:
         useless_cols.append(cat_column_features)
 
+# If a column contains only 1 catetgory, it is dropped
 for feature_column in modified_data.columns:
     num_cat = modified_data[feature_column].nunique()
     if num_cat <= 1:
@@ -68,4 +78,17 @@ if (type(modified_data_without_label) is not np.ndarray):
 modified_data_array = np.concatenate(
     (np.array(modified_data[label]).reshape(-1, 1),
      modified_data_without_label), axis=1)
-np.savetxt("data_processed.csv", modified_data_array, delimiter=",")
+
+# Save the processed file, please change preicison in fmt as needed
+np.savetxt("data_processed.csv", modified_data_array, delimiter=",", fmt='%1.3f')
+
+# Split the file into train and test (80% train and 20% test)
+from sklearn.model_selection import train_test_split
+train, test= train_test_split(modified_data_array, test_size=0.2)
+
+# Save the train file, please change preicison in fmt as needed
+np.savetxt("train.csv", train, delimiter=",", fmt='%1.3f')
+
+# Save the test file, please change preicison in fmt as needed
+np.savetxt("test.csv", test, delimiter=",", fmt='%1.3f')
+
