@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 # Please change the file location as needed
-file_location = "./bank_churn_project_1.csv"
+file_location = "./Churn_Modeling.csv"
 data = pd.read_csv(file_location)
 # Please change the label to match dataset
 label = 'Exited'
